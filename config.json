@@ -1,0 +1,26 @@
+{
+  "interval_minutes": 5,
+  "sites": [
+    {
+      "name": "Games The Shop",
+      "url": "https://www.gamestheshop.com/product/2153a461-7203-4802-aac4-283be4c775d3?variant=09df672e-b598-4b2d-9b3e-e1ca1dd9d205",
+      "browser": true
+    },
+    {
+      "name": "GamersGift",
+      "url": "https://www.gamersgift.com/product/playstation-network-wallet-top-up-1000/",
+      "browser": true,
+      "loading_text": ["NaN"]
+    },
+    {
+      "name": "JioGames Store",
+      "url": "https://store.jiogames.com/products/?brand=playstation",
+      "browser": true
+    },
+    {
+      "name": "Rooter",
+      "url": "https://shop.rooter.gg/product/playstation-gift-cards",
+      "browser": true
+    }
+  ]
+}

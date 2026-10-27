@@ -1,0 +1,4 @@
+requests
+beautifulsoup4
+# only needed for sites with "browser": true
+playwright
