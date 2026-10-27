@@ -10,5 +10,29 @@
   "Rooter": {
     "status": "out",
     "bad": 0
+  },
+  "Games The Shop (Rs.1000)": {
+    "status": "out",
+    "bad": 0
+  },
+  "Games The Shop (Rs.2000)": {
+    "status": "out",
+    "bad": 0
+  },
+  "GamersGift (Rs.1000)": {
+    "status": "out",
+    "bad": 0
+  },
+  "GamersGift (Rs.2000)": {
+    "status": "out",
+    "bad": 0
+  },
+  "Rooter (Rs.1000)": {
+    "status": "out",
+    "bad": 0
+  },
+  "Rooter (Rs.2000)": {
+    "status": "out",
+    "bad": 0
   }
 }
