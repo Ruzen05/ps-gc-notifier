@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-PlayStation gift card stock notifier -> Telegram.
+PlayStation gift card stock notifier -> Telegram & Discord.
 
 Usage:
-    python notifier.py --test      # send a test Telegram message
+    python notifier.py --test      # send a test Telegram & Discord message
     python notifier.py --inspect   # show what the bot sees on each page (run this first)
     python notifier.py --once      # check every site once (cron / GitHub Actions)
     python notifier.py             # loop forever, every `interval_minutes`
@@ -31,8 +31,6 @@ UA = (
     "(KHTML, like Gecko) Chrome/124.0 Safari/537.36"
 )
 
-# Phrases looked for in the page's visible text. Override per site in config.json
-# with "out_of_stock_text" / "in_stock_text" (use `--inspect` to see the real wording).
 DEFAULT_OUT = [
     "out of stock", "sold out", "currently unavailable",
     "temporarily unavailable", "notify me", "coming soon",
@@ -51,21 +49,37 @@ def load_json(path, default):
 
 
 def send_telegram(cfg, text):
-    url = f"https://api.telegram.org/bot{cfg['telegram_bot_token']}/sendMessage"
-    r = requests.post(url, data={"chat_id": cfg["telegram_chat_id"], "text": text}, timeout=20)
-    r.raise_for_status()
+    # Send to Telegram
+    if cfg.get("telegram_bot_token") and cfg.get("telegram_chat_id"):
+        try:
+            url = f"https://api.telegram.org/bot{cfg['telegram_bot_token']}/sendMessage"
+            r = requests.post(url, data={"chat_id": cfg["telegram_chat_id"], "text": text}, timeout=20)
+            r.raise_for_status()
+        except Exception as e:
+            log.warning("Telegram send error: %s", e)
+
+    # Send to Discord
+    if cfg.get("discord_webhook_url"):
+        try:
+            r = requests.post(
+                cfg["discord_webhook_url"],
+                json={"content": f"@everyone {text}"},
+                timeout=20,
+            )
+            r.raise_for_status()
+        except Exception as e:
+            log.warning("Discord send error: %s", e)
 
 
 def fetch_html(site):
     if site.get("browser"):
-        # Needs: pip install playwright && playwright install chromium
         from playwright.sync_api import sync_playwright
 
         with sync_playwright() as p:
             browser = p.chromium.launch()
             page = browser.new_page(user_agent=UA)
             page.goto(site["url"], wait_until="networkidle", timeout=60000)
-            page.wait_for_timeout(int(site.get("wait_ms", 4000)))  # let JS finish rendering
+            page.wait_for_timeout(int(site.get("wait_ms", 4000)))
             html = page.content()
             browser.close()
         return html
@@ -83,7 +97,7 @@ def page_text(site):
     soup = BeautifulSoup(fetch_html(site), "html.parser")
     for tag in soup(["script", "style", "noscript"]):
         tag.decompose()
-    if site.get("selector"):  # optional: only look at part of the page
+    if site.get("selector"):
         text = " ".join(n.get_text(" ") for n in soup.select(site["selector"]))
     else:
         text = soup.get_text(" ")
@@ -93,7 +107,6 @@ def page_text(site):
 def classify(site, text):
     """Return 'in', 'out' or 'unknown'."""
     t = text.lower()
-    # Page still showing placeholders (e.g. "NaN") -> not a trustworthy reading
     for p in site.get("loading_text", []):
         if re.search(r"\b" + re.escape(p.lower()) + r"\b", t):
             return "unknown"
@@ -135,7 +148,7 @@ def run_cycle(cfg, state):
         s = state.setdefault(name, {"status": "unknown", "bad": 0})
         try:
             status = classify(site, page_text(site))
-        except Exception as e:  # network error, block, timeout...
+        except Exception as e:
             log.warning("%s: error: %s", name, e)
             status = "error"
         log.info("%s: %s", name, status)
@@ -156,7 +169,7 @@ def run_cycle(cfg, state):
             s["status"] = status
 
         STATE_PATH.write_text(json.dumps(state, indent=2), encoding="utf-8")
-        time.sleep(random.uniform(2, 5))  # be polite between sites
+        time.sleep(random.uniform(2, 5))
 
 
 def main():
@@ -170,12 +183,12 @@ def main():
     if not cfg:
         sys.exit("config.json missing or invalid.")
 
-    # Secrets come from environment variables (GitHub Secrets) when set, else from config.json
     cfg["telegram_bot_token"] = os.environ.get("TELEGRAM_BOT_TOKEN") or cfg.get("telegram_bot_token", "")
     cfg["telegram_chat_id"] = os.environ.get("TELEGRAM_CHAT_ID") or cfg.get("telegram_chat_id", "")
+    cfg["discord_webhook_url"] = os.environ.get("DISCORD_WEBHOOK_URL") or cfg.get("discord_webhook_url", "")
 
     if args.test:
-        send_telegram(cfg, "✅ PlayStation GC notifier is connected.")
+        send_telegram(cfg, "✅ PlayStation GC notifier is connected to Telegram & Discord!")
         print("Test message sent.")
         return
     if args.inspect:
