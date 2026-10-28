@@ -33,7 +33,9 @@
       "name": "GamersGift (Rs.1000)",
       "url": "https://www.gamersgift.com/product/playstation-network-wallet-top-up-1000/",
       "browser": true,
-      "loading_text": ["NaN"],
+      "loading_text": [
+        "NaN"
+      ],
       "out_of_stock_text": [
         "quantity: out of stock"
       ],
@@ -47,7 +49,9 @@
       "name": "GamersGift (Rs.2000)",
       "url": "https://www.gamersgift.com/product/playstation-network-wallet-top-up-2000/",
       "browser": true,
-      "loading_text": ["NaN"],
+      "loading_text": [
+        "NaN"
+      ],
       "out_of_stock_text": [
         "quantity: out of stock"
       ],
@@ -87,7 +91,15 @@
       "name": "JioGames Store",
       "url": "https://store.jiogames.com/products/?brand=playstation",
       "browser": true,
-      "enabled": false
+      "wait_ms": 6000,
+      "out_of_stock_text": [
+        "no products found"
+      ],
+      "in_stock_text": [
+        "add to cart",
+        "buy now",
+        "playstation"
+      ]
     }
   ]
 }
