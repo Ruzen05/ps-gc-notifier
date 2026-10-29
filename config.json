@@ -102,31 +102,19 @@
       ]
     },
     {
-      "name": "E2Z Store (Rs.1000)",
-      "url": "https://e2zstore.com/product/rs-1000-playstation-network-wallet-top-up/",
+      "name": "Amazon.in (Rs.2000)",
+      "url": "https://www.amazon.in/Rs-2000-Sony-PlayStation-Network-Delivery/dp/B093QF35KZ",
       "browser": true,
-      "wait_ms": 5000,
-      "selector": ".summary.entry-summary",
+      "wait_ms": 4000,
+      "selector": "#centerCol, #rightCol",
       "out_of_stock_text": [
-        "out of stock",
-        "sold out"
+        "currently unavailable",
+        "out of stock"
       ],
       "in_stock_text": [
-        "add to cart"
-      ]
-    },
-    {
-      "name": "E2Z Store (Rs.2000)",
-      "url": "https://e2zstore.com/product/rs-2000-playstation-network-wallet-top-up/",
-      "browser": true,
-      "wait_ms": 5000,
-      "selector": ".summary.entry-summary",
-      "out_of_stock_text": [
-        "out of stock",
-        "sold out"
-      ],
-      "in_stock_text": [
-        "add to cart"
+        "add to cart",
+        "buy now",
+        "in stock"
       ]
     }
   ]
