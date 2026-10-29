@@ -38,5 +38,13 @@
   "JioGames Store": {
     "status": "out",
     "bad": 0
+  },
+  "E2Z Store (Rs.1000)": {
+    "status": "out",
+    "bad": 0
+  },
+  "E2Z Store (Rs.2000)": {
+    "status": "out",
+    "bad": 0
   }
 }
